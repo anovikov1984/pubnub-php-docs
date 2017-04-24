@@ -1,0 +1,126 @@
+== PHP V4 Publish/Subscribe Tutorial for Realtime Apps
+
+=== Data Stream Samples
+
+====== Initialize the API
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setSecretKey("my_secret_key");
+
+$pubnub = new PubNub($pnconf);
+----
+
+====== Publishing and subscribing to a channel
+
+[source, php]
+----
+$pubnub->subscribe()->channels("my_channel")->execute();
+----
+
+[source, php]
+----
+$pubnub->publish()
+    ->channel("my_channel")
+    ->message(["hello", "there"])
+    ->shouldStore(true)
+    ->usePost(true)
+    ->sync();
+----
+
+Publish after subscribe connect using SubscribeCallback
+
+[source, php]
+----
+use PubNub\Callbacks\SubscribeCallback;
+use PubNub\Enums\PNStatusCategory;
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconfig = new PNConfiguration();
+
+$pnconfig->setPublishKey("demo");
+$pnconfig->setSubscribeKey("demo");
+
+$pubnub = new PubNub($pnconfig);
+
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
+            // Publish in another thread
+            $pubnub->publish()->channel("awesomeChannel")
+                ->message(["fieldA": "awesome", "fieldB": 10])
+                ->sync();
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+    }
+
+    function presence($pubnub, $presence)
+    {
+    }
+}
+
+$subscribeCallback = new MySubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+$pubnub->subscribe()->channels("awesomeChannel")->execute();
+----
+
+Unsubscribing from a channel
+
+[source, php]
+----
+use PubNub\Callbacks\SubscribeCallback;
+use PubNub\Enums\PNStatusCategory;
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+use PubNub\Exceptions\PubNubUnsubscribeException;
+
+$pnconfig = new PNConfiguration();
+$pubnub = new PubNub($pnconfig);
+
+$pnconfig->setPublishKey("demo");
+$pnconfig->setSubscribeKey("demo");
+
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        if ($this->checkUnsubscribeCondition()) {
+            throw (new PubNubUnsubscribeException())->setChannels("awesomeChannel");
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+    }
+
+    function presence($pubnub, $presence)
+    {
+    }
+
+    function checkUnsubscribeCondition()
+    {
+        // return true or false
+    }
+}
+
+$subscribeCallback = new MySubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+$pubnub->subscribe()->channels("awesomeChannel")->execute();
+----
