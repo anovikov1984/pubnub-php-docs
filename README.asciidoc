@@ -6,11 +6,12 @@
 * link:AdvancedChannelGroups.asciidoc[Advanced Channel Groups]
 * link:StreamFilter.asciidoc[Stream Filter]
 * link:StreamController.asciidoc[Stream Controller]
-* link:PublishSubscribe.asciidoc[PublishSubscribe]
+* link:PublishSubscribe.asciidoc[Publish Subscribe]
+* link:Presence.asciidoc[Presence]
 
 = Pending
 
-* Presence
+* API
 
 = Not started
 

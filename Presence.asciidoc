@@ -1,0 +1,82 @@
+Presence
+
+[source, php]
+.Setting UUID
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setUuid("my_uuid");
+
+$pubnub = new PubNub($pnconf);
+----
+
+[source, php]
+.RECEIVING PRESENCE JOIN, LEAVE, AND TIMEOUT EVENTS IN REALTIME
+----
+$pubnub->subscribe()
+    ->channels("my_channel")
+    ->withPresence()
+    ->execute()
+----
+
+[source, php]
+.Here now
+----
+$result = $pubnub->hereNow()
+    ->channels(["my_channel", "demo"])
+    ->includeUuids(true)
+    ->execute()
+
+foreach ($result->getChannels() as $channelData) {
+    print("---\n");
+    print("channel: " . $channelData->getChannelName() . "\n");
+    print("occupancy: " . $channelData->getOccupancy() . "\n");
+    print("occupants: \n");
+    print_r($channelData->getOccupants());
+
+    foreach ($channelData->getOccupants() as $occupant) {
+        print("uuid: " . $occupant->getUuid() . ", state: " . $occupant->getState());
+    }
+}
+----
+
+[source, php]
+.Global Here Now
+----
+$result = $pubnub->hereNow()
+    ->includeState(true)
+    ->includeUuids(true)
+    ->sync();
+----
+
+[source, php]
+.Where now
+----
+$result = $pubnub->whereNow()
+    ->uuid("his-uuid")
+    ->sync();
+----
+
+[source, php]
+.Get State
+----
+$result = $pubnub->getState()
+    ->channels("my_channel")
+    ->uuid("jbonham")
+    ->sync();
+----
+
+[source, php]
+.Set State
+----
+$result = $pubnub->setState()
+    ->channels("my_channel")
+    ->state(["full_name" => "James PatrickPage"])
+    ->uuid("jbonham")
+    ->sync();
+----
