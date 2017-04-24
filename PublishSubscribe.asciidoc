@@ -90,10 +90,11 @@ use PubNub\PubNub;
 use PubNub\Exceptions\PubNubUnsubscribeException;
 
 $pnconfig = new PNConfiguration();
-$pubnub = new PubNub($pnconfig);
 
 $pnconfig->setPublishKey("demo");
 $pnconfig->setSubscribeKey("demo");
+
+$pubnub = new PubNub($pnconfig);
 
 class MySubscribeCallback extends SubscribeCallback
 {

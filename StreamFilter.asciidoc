@@ -36,12 +36,14 @@ use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
 
-$pubnub = new PubNub($pnconf);
-
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setUuid("my_uuid");
 $pnconf->setFilterExpression("uuid == " . "'" . $pubnub->getConfiguration()->getUuid() . "'");
+
+$pubnub = new PubNub($pnconf);
 ----
+
+[source, php]
 ----
 $meta = [
     'uuid' => $pubnub->getConfiguration()->getUuid()
@@ -66,11 +68,11 @@ use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
 
-$pubnub = new PubNub($pnconf);
-
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setUuid("my_uuid");
 $pnconf->setFilterExpression("language == 'english'");
+
+$pubnub = new PubNub($pnconf);
 ----
 ----
 $meta = [
@@ -90,6 +92,8 @@ $meta = [
 
 $pubnub->publish()->channel("ch1")->meta($meta)->message("Hi!")->sync();
 ----
+
+[source, php]
 ----
 $meta = [
     'language' => 'french'
@@ -97,6 +101,8 @@ $meta = [
 
 $pubnub->publish()->channel("ch1")->meta($meta)->message("Bonjour!")->sync();
 ----
+
+[source, php]
 ----
 $meta = [
     'language' => 'spanish'
@@ -110,11 +116,11 @@ use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
 
-$pubnub = new PubNub($pnconf);
-
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setUuid("my_uuid");
 $pnconf->setFilterExpression("('french', 'english') contains language");
+
+$pubnub = new PubNub($pnconf);
 ----
 
 ====== EXAMPLE FOUR: NEGATION
@@ -134,7 +140,7 @@ $meta = [
     'language' => 'french'
 ];
 
-$pubnub->publish()->channel("ch1")->mta($meta)->message("Bonjour!")->sync();
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Bonjour!")->sync();
 ----
 
 [source, php]
@@ -153,11 +159,11 @@ use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
 
-$pubnub = new PubNub($pnconf);
-
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setUuid("my_uuid");
 $pnconf->setFilterExpression("language != 'spanish'");
+
+$pubnub = new PubNub($pnconf);
 ----
 
 ====== EXAMPLE FIVE: MULTIPLE FILTERS
@@ -209,11 +215,11 @@ use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
 
-$pubnub = new PubNub($pnconf);
-
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setUuid("my_uuid");
 $pnconf->setFilterExpression("(price > 100.00 && channel == 'AAPL') || (price < 15.00 && channel == 'GOOG')");
+
+$pubnub = new PubNub($pnconf);
 ----
 
 ====== EXAMPLE SIX: ARITHMETIC OPERATIONS
@@ -234,9 +240,9 @@ use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
 
-$pubnub = new PubNub($pnconf);
-
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setUuid("my_uuid");
 $pnconf->setFilterExpression("temperature > 50");
+
+$pubnub = new PubNub($pnconf);
 ----

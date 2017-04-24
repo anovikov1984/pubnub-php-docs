@@ -65,10 +65,11 @@ use PubNub\PNConfiguration;
 use PubNub\PubNub;
 
 $pnconf = new PNConfiguration();
-$pubnub = new PubNub($pnconf);
 
 $pnconf->setSubscribeKey("my_sub_key");
 $pnconf->setPublishKey("my_pub_key");
+
+$pubnub = new PubNub($pnconf);
 ----
 
 === Adding Listeners

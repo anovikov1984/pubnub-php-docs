@@ -6,7 +6,7 @@ for ($i = 0; $i < 500; $i++) {
     $pubnub->publish()
         ->message("message #" . $i)
         ->channel("history_channel")
-        ->setShouldStore(true)
+        ->shouldStore(true)
         ->sync();
 }
 ----
