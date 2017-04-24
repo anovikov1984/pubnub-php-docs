@@ -1,0 +1,20 @@
+= Ready to be published
+
+* link:GettingStarted.asciidoc[Getting Started]
+* link:AccessManager.asciidoc[Access Manager]
+* link:StorageAndPlayback.asciidoc[Storage and Playback]
+* link:AdvancedChannelGroups.asciidoc[Advanced Channel Groups]
+* link:StreamFilter.asciidoc[Stream Filter]
+* link:StreamController.asciidoc[Stream Controller]
+
+= Pending
+
+* Publish and Subscribe
+* Presence
+
+= Not started
+
+
+= Notice
+
+* Reconnection Polices - PHP SDK doesn't implement this feature due synchronous behaviour. If any kind of error happens a status callback is invoked with error details and the blocking subscription loop is released.
