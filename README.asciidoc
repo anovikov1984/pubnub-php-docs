@@ -12,6 +12,8 @@
 = Pending
 
 * API
+* General Errors
+* Migration Gide
 
 = Not started
 
