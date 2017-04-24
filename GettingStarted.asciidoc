@@ -1,0 +1,219 @@
+
+== Hello world
+
+[source, php]
+----
+use Pubnub\PubNub;
+use PubNub\Enums\PNStatusCategory;
+use PubNub\Callbacks\SubscribeCallback;
+use PubNub\PNConfiguration;
+use PubNub\Exceptions\PubNubUnsubscribeException;
+
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        if ($status->getCategory() === PNStatusCategory::PNUnexpectedDisconnectCategory) {
+            // This event happens when radio / connectivity is lost
+        } else if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
+            // Connect event. You can do stuff like publish, and know you'll get it
+            // Or just use the connected event to confirm you are subscribed for
+            // UI / internal notifications, etc
+        } else if ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory) {
+            // Handle message decryption error. Probably client configured to
+            // encrypt messages and on live data feed it received plain text.
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+        // Handle new message stored in message.message
+    }
+
+    function presence($pubnub, $presence)
+    {
+        // handle incoming presence data
+    }
+}
+
+$pnconf = new PNConfiguration();
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+
+$pubnub->addListener($subscribeCallback);
+
+// Subscribe to a channel, this is not async.
+$pubnub->subscribe()->channels("hello_world")->execute();
+
+// Use the publish command separately from the Subscribe code shown above.
+// Subscribe is not async and will block the execution until complete.
+$result = $pubnub->publish()->channel("hello_world")->message("Hello PubNub")->sync();
+
+print_r($result);
+
+----
+
+== Copy and paste examples
+
+=== Init
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+----
+
+=== Adding Listeners
+
+[source, php]
+----
+use PubNub\Enums\PNStatusCategory;
+use PubNub\Callbacks\SubscribeCallback;
+
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        // The status object returned is always related to subscribe but could contain
+        // information about subscribe, heartbeat, or errors
+        // use the operationType to switch on different options
+        if ($status->getCategory() === PNStatusCategory::PNUnexpectedDisconnectCategory) {
+            // This event happens when radio / connectivity is lost
+        } else if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
+            // Connect event. You can do stuff like publish, and know you'll get it
+            // Or just use the connected event to confirm you are subscribed for
+            // UI / internal notifications, etc
+        } else if ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory) {
+            // Handle message decryption error. Probably client configured to
+            // encrypt messages and on live data feed it received plain text.
+        } else if ($status->getCategory() === PNStatusCategory::PNAccessDeniedCategory) {
+            // This means that PAM does allow this client to subscribe to this
+            // channel and channel group configuration. This is another explicit error
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+        // Handle new message stored in message.message
+    }
+
+    function presence($pubnub, $presence)
+    {
+        // handle incoming presence data
+    }
+}
+
+$subscribeCallback = new MySubscribeCallback();
+----
+
+=== Remove Listeners
+
+[source, php]
+----
+$subscribeCallback = new MySubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+// some time later
+$pubnub->removeListener($subscribeCallback);
+----
+
+=== Time
+
+[source, php]
+----
+$result = $pubnub->time()->sync();
+
+print_r($result);
+----
+
+=== Subscribe
+
+[source, php]
+----
+$pubnub->subscribe()->channels("my_channel")->execute();
+----
+
+=== Publish
+
+[source, php]
+----
+$result = $pubnub->publish()->channel("my_channel")->message(["hello", "there"])->sync();
+
+print_r($result);
+----
+
+=== Here now
+
+[source, php]
+----
+try {
+    $result = $pubnub->hereNow()->channels("my_channel")->sync();
+} catch (\PubNub\Exceptions\PubNubException $err) {
+    print_r($err);
+}
+
+foreach ($result->getChannels() as $channelData) {
+    print("---\n");
+    printf("channel: %s\n", $channelData->getChannelName());
+    printf("occupancy: %s\n", $channelData->getOccupancy());
+
+    foreach ($channelData->getOccupants() as $occupant) {
+        printf("uuid: %s, state: %s\n", $occupant->getUuid(), $occupant->getState());
+    }
+}
+----
+
+=== Presence
+
+[source, php]
+----
+$pubnub->subscribe()->channels("my_channel")->withPresence()->execute();
+----
+
+=== History
+
+[source, php]
+----
+$result = $this->pubnub->history()->channel("my_channel")->sync();
+
+print_r($result->getMessages());
+----
+
+=== Unsubscribe
+
+[source, php]
+----
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        if ($this->checkForUnsubscribeCondition()) {
+            // Unsubscribe on condition
+            throw new PubNubUnsubscribeException();
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+    }
+
+    function presence($pubnub, $presence)
+    {
+    }
+}
+
+$subscribeCallback = new MySubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+$pubnub->subscribe()->channels("my_channel")->execute();
+----

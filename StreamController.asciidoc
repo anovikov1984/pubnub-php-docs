@@ -1,0 +1,81 @@
+== PHP V4 Stream Controller Tutorial for Realtime Apps
+
+=== CHANNEL MULTIPLEXING CODE SAMPLES
+
+====== SUBSCRIBING BY SPECIFYING CHANNEL AS AN ARRAY
+
+[source, php]
+----
+$pubnub->subscribe()->channels(["my_channel1", "my_channel2"])->execute();
+----
+
+====== WILDCARD SUBSCRIBE
+
+[source, php]
+----
+$pubnub->subscribe()->channels("foo.*")->execute();
+----
+
+====== DEFINING THE CHANNEL GROUP
+
+[source, php]
+----
+$pubnub->listChannelsInChannelGroup()->channelGroup("family")->sync();
+----
+
+====== ADDING CHANNELS TO A CHANNEL GROUP
+
+[source, php]
+----
+$pubnub->addChannelToChannelGroup()
+    ->channelGroup($channelGroup)
+    ->channels("wife")
+    ->sync();
+----
+----
+$pubnub->addChannelToChannelGroup()
+    ->channelGroup($channelGroup)
+    ->channels(["son", "daughter"])
+    ->sync();
+----
+
+====== SUBSCRIBING TO THE CHANNEL GROUP
+
+[source, php]
+----
+$pubnub->subscribe()->channelGroups($channelGroup)->execute();
+----
+
+====== RECEIVING CHANNEL GROUP PRESENCE MESSAGES
+
+[source, php]
+----
+$pubnub->subscribe()
+    ->channelGroups("awesome_channel_group")
+    ->withPresence()
+    ->execute();
+----
+
+====== REMOVING A CHANNEL FROM A CHANNEL GROUP
+
+[source, php]
+----
+$pubnub->removeChannelFromChannelGroup()
+    ->channelGroup($channelGroup)
+    ->channels(["son", "daughter"])
+    ->sync();
+----
+
+====== LISTING ALL CHANNELS IN A CHANNEL GROUP
+
+[source, php]
+----
+$pubnub->listChannelsInChannelGroup()->channelGroup("family")->sync();
+----
+
+====== REMOVING CHANNEL GROUPS BY NAME
+
+[source, php]
+----
+$pubnub->removeChannelGroup()->channelGroup("family")->sync();
+----

@@ -1,0 +1,218 @@
+== Advanced Channel Groups
+
+=== User Identification
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setUuid("0c2340c2-8cc1-4898-8868-444ba77d02d2::web");
+
+$pubnub = new PubNub($pnconf);
+----
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setUuid("user-a");
+
+$pubnub = new PubNub($pnconf);
+----
+
+=== User Channels
+
+[source, php]
+----
+// Publish a status message
+
+$data = [
+    "author" => "user-a",
+    "status" => "I am reading about Advanced Channel Groups!",
+    "timestamp" => time()
+];
+
+try {
+    $result = $pubnub->publish()
+        ->message($data)
+        ->channel("ch-user-b-present")
+        ->sync();
+
+    print($result->getTimetoken());
+} catch (PubNubException $e) {
+    print($e);
+}
+----
+
+=== User Channel Groups
+
+[source, php]
+----
+// Add ch-user-a-present to cg-user-a-friends
+$result = $pubnub->addChannelToChannelGroup()
+    ->channelGroup("cg-user-a-friend")
+    ->channels("ch-user-a-present")
+    ->sync();
+
+// Add ch-user-a-present to cg-user-a-status-feed
+$result = $pubnub->addChannelToChannelGroup()
+    ->channelGroup("cg-user-a-status-feed")
+    ->channels("ch-user-a-present")
+    ->sync();
+----
+
+=== Removing Channels
+
+[source, php]
+----
+$result = $pubnub->removeChannelsFromChannelGroup()
+    ->channels(["ch1", "ch2"])
+    ->channelGroup("cg")
+    ->sync();
+----
+
+=== Friending
+
+[source, php]
+----
+// ************************************
+// * User A and User B become friends
+// ************************************
+try {
+    $result = $pubnub->addChannelToChannelGroup()
+        ->channelGroup("cg-user-a-friends")
+        ->channels("ch-user-b-present")
+        ->sync();
+
+    print("Channel added to channel group");
+} catch (PubNubException $e) {
+    print($e);
+}
+
+try {
+    $result = $pubnub->addChannelToChannelGroup()
+        ->channelGroup("cg-user-a-status-feed")
+        ->channels("ch-user-b-status")
+        ->sync();
+
+    print("Channel added to channel group");
+} catch (PubNubException $e) {
+    print($e);
+}
+
+try {
+    $result = $pubnub->addChannelToChannelGroup()
+        ->channelGroup("cg-user-b-friends")
+        ->channels("ch-user-a-present")
+        ->sync();
+
+    print("Channel added to channel group");
+} catch (PubNubException $e) {
+    print($e);
+}
+
+try {
+    $result = $pubnub->addChannelToChannelGroup()
+        ->channelGroup("cg-user-b-status-feed")
+        ->channels("ch-user-a-status")
+        ->sync();
+
+    print("Channel added to channel group");
+} catch (PubNubException $e) {
+    print($e);
+}
+----
+
+=== Friends Online/Offline (Presence)
+
+[source, php]
+----
+try {
+    $result = $pubnub->listChannelsInChannelGroup()
+        ->channelGroup("cg-user-a-friends")
+        ->sync();
+
+    print("FRIEND LIST:");
+
+    foreach($result->getChannels() as $channel) {
+        print($channel);
+    }
+} catch (PubNubException $e) {
+    print($e);
+}
+
+try {
+    $result = $pubnub->hereNow()
+        ->channelGroups("cg-user-a-status")
+        ->sync();
+
+    print($result->getTotalOccupancy());
+
+} catch (PubNubException $e) {
+    print($e);
+}
+
+class PresenceCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+    }
+
+    function message($pubnub, $message)
+    {
+    }
+
+    function presence($pubnub, $presence)
+    {
+        print(sprintf("FRIEND PRESENCE: ", $presence));
+    }
+}
+
+$callback = new PresenceCallback();
+
+$pubnub->addListener($callback);
+
+$pubnub->subscribe()
+    ->channelGroups("cg-user-a-friends")
+    ->withPresence()
+    ->execute();
+----
+
+=== Status Feed (Messages)
+
+[source, php]
+----
+class MessageCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+    }
+
+    function message($pubnub, $message)
+    {
+        print("MESSAGE: " . $message);
+    }
+
+    function presence($pubnub, $presence)
+    {
+    }
+}
+
+$messageCallback = new MessageCallback();
+
+$pubnub->addListener($messageCallback);
+
+$pubnub->subscribe()
+    ->channelGroups("cg-user-a-friends")
+    ->execute();
+----

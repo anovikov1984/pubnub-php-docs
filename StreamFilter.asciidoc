@@ -1,0 +1,242 @@
+== Stream Filtering Tutorial for PHP V4
+
+=== Publishing with meta
+
+[source, php]
+----
+$meta = [
+    'my' => 'meta',
+    'name' => 'PubNub'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("hello")->sync();
+----
+
+=== Subscribing with filtering
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setFilterExpression("uuid == 'my_uuid'");
+
+$pubnub = new PubNub($pnconf);
+----
+
+====== EXAMPLE ONE: PREVENT RECEIVING YOUR OWN MESSAGES
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setUuid("my_uuid");
+$pnconf->setFilterExpression("uuid == " . "'" . $pubnub->getConfiguration()->getUuid() . "'");
+----
+----
+$meta = [
+    'uuid' => $pubnub->getConfiguration()->getUuid()
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hi!")->sync();
+----
+
+====== EXAMPLE TWO: FILTER BY LANGUAGE
+
+[source, php]
+----
+$meta = [
+    'language' => 'english'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hi!")->sync();
+----
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setUuid("my_uuid");
+$pnconf->setFilterExpression("language == 'english'");
+----
+----
+$meta = [
+    'language' => 'french'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Bonjour!")->sync();
+----
+
+====== EXAMPLE THREE: FILTER MULTIPLE LANGUAGES
+
+[source, php]
+----
+$meta = [
+    'language' => 'english'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hi!")->sync();
+----
+----
+$meta = [
+    'language' => 'french'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Bonjour!")->sync();
+----
+----
+$meta = [
+    'language' => 'spanish'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hola!")->sync();
+----
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setUuid("my_uuid");
+$pnconf->setFilterExpression("('french', 'english') contains language");
+----
+
+====== EXAMPLE FOUR: NEGATION
+
+[source, php]
+----
+$meta = [
+    'language' => 'english'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hi!")->sync();
+----
+
+[source, php]
+----
+$meta = [
+    'language' => 'french'
+];
+
+$pubnub->publish()->channel("ch1")->mta($meta)->message("Bonjour!")->sync();
+----
+
+[source, php]
+----
+$meta = [
+    'language' => 'spanish'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hola!")->sync();
+----
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setUuid("my_uuid");
+$pnconf->setFilterExpression("language != 'spanish'");
+----
+
+====== EXAMPLE FIVE: MULTIPLE FILTERS
+
+[source, php]
+----
+$meta = [
+    'price' => '99.75',
+    'channel' => 'APPL'
+];
+
+$pubnub->publish()->channel("AAPL")->setMeta($meta)->message("99.75")->sync();
+----
+
+[source, php]
+----
+$meta = [
+    'price' => '100.00',
+    'channel' => 'APPL'
+];
+
+$pubnub->publish()->channel("AAPL")->meta($meta)->message("100.00")->sync();
+----
+
+[source, php]
+----
+$meta = [
+    'price' => '15.50',
+    'channel' => 'GOOG'
+];
+
+$pubnub->publish()->channel("AAPL")->meta($meta)->message("99.75")->sync();
+----
+
+[source, php]
+----
+$meta = [
+    'price' => '14.95',
+    'channel' => 'GOOG'
+];
+
+$pubnub->publish()->channel("AAPL")->meta($meta)->message("100.00")->sync();
+----
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setUuid("my_uuid");
+$pnconf->setFilterExpression("(price > 100.00 && channel == 'AAPL') || (price < 15.00 && channel == 'GOOG')");
+----
+
+====== EXAMPLE SIX: ARITHMETIC OPERATIONS
+
+[source, php]
+------
+$meta = [
+    'temperature' => '60'
+];
+
+$pubnub->publish()->channel("ch1")->meta($meta)->message("Hi!")->sync();
+------
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pubnub = new PubNub($pnconf);
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setUuid("my_uuid");
+$pnconf->setFilterExpression("temperature > 50");
+----

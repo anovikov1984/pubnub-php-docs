@@ -1,0 +1,184 @@
+== PHP Security with Access Control, AES & TLS/SSL encryption for Realtime Apps
+
+[source, php]
+.To initialize with the secret key:
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setSecretKey("my_secret_key");
+
+$pubnub = new PubNub($pnconf);
+----
+
+[source, php]
+.Set auth key on initialization
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setAuthKey("my_auth_key");
+
+$pubnub = new PubNub($pnconf);
+----
+
+[source, php]
+.Set auth key after initialization
+----
+$pubnub->getConfiguration()->setAuthKey("authkey");
+----
+
+PubNub Access Manager - Administrative-side Configuration:
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setSecretKey("my_secret_key");
+
+$pubnub = new PubNub($pnconf);
+----
+
+Pam operations level #1
+
+The first defined rule to match wins. To begin, lets make a blanket no read, no write access at a global level rule:
+
+[source, php]
+----
+$result = $pubnub->grant()
+    ->read(false)
+    ->write(false)
+    ->manage(false)
+    ->sync();
+----
+
+Pam operations level #2
+
+The above states that the rule is good for 60 minutes, and that read and write are denied at the global level. The revoke() method aliases to the grant() method, but with default read and write false, so we can issue the same exact operation using revoke() as:
+
+[source, php]
+----
+$result = $pubnub->revoke()->sync();
+----
+
+Pam operations level #3
+
+[source, php]
+----
+$result = $pubnub->grant()
+    ->read(true)
+    ->write(false)
+    ->channels("public_chat")
+    ->ttl(60)
+    ->sync();
+----
+
+Pam operations level #4
+
+[source, php]
+----
+$result = $pubnub->grant()
+    ->read(true)
+    ->write(true)
+    ->channels("public_chat")
+    ->authKeys("authenticateduser")
+    ->ttl(60)
+    ->sync();
+----
+
+Handling permissions denied error
+
+[source, php]
+----
+use PubNub\Callbacks\SubscribeCallback;
+use PubNub\Enums\PNStatusCategory;
+
+class MyCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        if ($status->getCategory() === PNStatusCategory::PNAccessDenied) {
+            // Handle permissions here
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+    }
+
+    function presence($pubnub, $presence)
+    {
+    }
+}
+
+$callback = new MyCallback();
+
+$pubnub->addListener($callback);
+
+$pubnub->subscribe()->channels("private_chat")->execute();
+----
+
+Grant access to manage CG
+
+[source, php]
+----
+$result = $pubnub->grant()
+    ->manage(true)
+    ->channelGroups(["gr1", "gr2", "gr3"])
+    ->authKeys(["key1", "key2", "key3"])
+    ->ttl(60)
+    ->sync();
+----
+
+Revoke access to CG
+[source, php]
+----
+$result = $pubnub->revoke()
+    ->channelGroups(["gr1", "gr2", "gr3"])
+    ->authKeys(["key1", "key2", "key3"])
+    ->sync();
+----
+
+Message layer encryption AES256
+
+[source, php]
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my_sub_key");
+$pnconf->setPublishKey("my_pub_key");
+$pnconf->setCipherKey("my_cipher_key");
+
+$pubnub = new PubNub($pnconf);
+----
+
+TLS/SSL
+
+[source, php]
+.TLS/SSL is enabled by default, you can disable it in your pubnub config like
+----
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("my-key");
+$pnconf->setPublishKey("my-key");
+$pnconf->setSecure(false);
+
+$pubnub = new PubNub($pnconf);
+----

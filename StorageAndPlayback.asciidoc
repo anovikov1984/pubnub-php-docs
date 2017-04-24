@@ -1,0 +1,64 @@
+Publish some messages
+
+[source, php]
+----
+for ($i = 0; $i < 500; $i++) {
+    $pubnub->publish()
+        ->message("message #" . $i)
+        ->channel("history_channel")
+        ->setShouldStore(true)
+        ->sync();
+}
+----
+
+Pulling from storage with a simple history() call
+
+[source, php]
+----
+$result = $pubnub->history()
+    ->channel("history_channel")
+    ->count(100)
+    ->sync();
+----
+
+The response format is:
+----
+[
+    ["message1", "message2", "message3",... ],
+    "Start Time Token",
+    "End Time Token"
+]
+----
+
+Paging
+
+[source, php]
+----
+$result = $pubnub->history()
+    ->channel("history_channel")
+    ->count(2)
+    ->sync();
+----
+
+Retreiving from a time interval
+
+[source, php]
+----
+$result = $pubnub->history()
+    ->channel("history_channel")
+    ->count(100)
+    ->start(13847168620721752)
+    ->end(14918366093912072)
+    ->sync();
+----
+
+Include timetoken into history response
+
+[source, php]
+----
+$result = $pubnub->history()
+    ->channel("history_channel")
+    ->count(100)
+    ->includeTimetoken(true)
+    ->sync();
+----
