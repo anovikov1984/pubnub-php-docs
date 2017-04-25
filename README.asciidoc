@@ -8,12 +8,12 @@
 * link:StreamController.asciidoc[Stream Controller]
 * link:PublishSubscribe.asciidoc[Publish Subscribe]
 * link:Presence.asciidoc[Presence]
+* link:MigrationGuide.asciidoc[Migration Guide]
 
 = Pending
 
 * API
 * General Errors
-* Migration Gide
 
 = Not started
 
