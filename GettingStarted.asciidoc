@@ -1,3 +1,32 @@
+== Get code without Composer
+
+1. You need only src folder. To get it clone repo:
+
+[source,sh]
+----
+git clone https://github.com/pubnub/php.git ./pubnub-php
+----
+2. Copy `src` folder to your project and include `autoloader.php` file.
+3. Require autoloader.php:
+
+[source,php]
+----
+require_once('src/autoloader.php');
+----
+
+== Get code using Composer
+1. Add pubnub package to your composer.json file
+
+[source,php]
+----
+{
+    "require": {
+        "pubnub/pubnub": "~4.0"
+    }
+}
+----
+
+2. Run composer install from command line.
 
 == Hello world
 
@@ -137,6 +166,16 @@ print_r($result);
 ----
 
 === Subscribe
+
+----
+Subscribe call is blocking and it will block until:
+* a message is published on the channel(s) it is subscribed to (`message` callback)
+* a presence event is received on the channel(s) it is subscribed to (`presence` callabck)
+* a status event is triggered by SDK (`status` callback)
+
+Inside of all of the callbacks above you can throw `PubNubUnsubscribeException` to exit the subscribe loop.
+Perhaps a mention that creating a special exit message would be advisable.
+----
 
 [source, php]
 ----

@@ -80,3 +80,49 @@ $result = $pubnub->setState()
     ->uuid("jbonham")
     ->sync();
 ----
+
+[source, php]
+----
+use PubNub\PubNub;
+use PubNub\PNConfiguration;
+use PubNub\Callbacks\SubscribeCallback;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setPublishKey("demo");
+$pnconf->setSubscribeKey("demo");
+
+$pubnub = new PubNub($pnconf);
+
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
+        if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
+            $result = $pubnub->setState()
+                ->channels("awesomeChannel")
+                ->channelGroups("awesomeChannelGroup")
+                ->state([
+                    "fieldA" => "awesome",
+                    "fieldB" => 10
+                ])->sync();
+
+            print_r($result);
+        }
+    }
+
+    function message($pubnub, $message)
+    {
+    }
+
+    function presence($pubnub, $presence)
+    {
+    }
+}
+
+$subscribeCallback = new MySubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+$pubnub->subscribe()->channels("my_channel")->execute();
+----

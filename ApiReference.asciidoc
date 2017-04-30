@@ -502,8 +502,8 @@ Otherwise the exception will unsubscribe from all channels and channel-groups.
 | Parameter | Type | Required | Defaults | Description
 | getChannels | string | false | | The `channels` to get the here now details.
 | getChannelGroups | string | false | | The `channel groups` to get the here now details.
-| setChannels | bool | Optional | False | Unsubscribe to channels, Either channel or channelGroup is required
-| setChannelGroups | bool | Optional | false | Unsubscribe to channel groups, Either channel or channelGroup is required
+| setChannels | array | Optional | False | Unsubscribe to channels, Either channel or channelGroup is required
+| setChannelGroups | array | Optional | false | Unsubscribe to channel groups, Either channel or channelGroup is required
 |===
 
 ====== Basic Usage
@@ -852,6 +852,13 @@ $pubnub->whereNow()->uuid(string)->sync();
 | Parameter | type | Required | Defaults | Description
 | uuid | str | Optional | `uuid` to get info on
 |===
+
+====== Basic Usage
+
+[source, php]
+----
+$result = $pubnub->whereNow()->sync();
+----
 
 ====== Other Examples
 [source, php]
