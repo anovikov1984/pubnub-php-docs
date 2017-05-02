@@ -108,7 +108,7 @@ class MyCallback extends SubscribeCallback
 {
     function status($pubnub, $status)
     {
-        if ($status->getCategory() === PNStatusCategory::PNAccessDenied) {
+        if ($status->getCategory() === PNStatusCategory::PNAccessDeniedCategory) {
             // Handle permissions here
         }
     }

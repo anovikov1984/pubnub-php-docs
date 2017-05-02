@@ -36,7 +36,6 @@ use Pubnub\PubNub;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\PNConfiguration;
-use PubNub\Exceptions\PubNubUnsubscribeException;
 
 class MySubscribeCallback extends SubscribeCallback
 {

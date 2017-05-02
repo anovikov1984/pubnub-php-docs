@@ -175,7 +175,7 @@ $meta = [
     'channel' => 'APPL'
 ];
 
-$pubnub->publish()->channel("AAPL")->setMeta($meta)->message("99.75")->sync();
+$pubnub->publish()->channel("AAPL")->meta($meta)->message("99.75")->sync();
 ----
 
 [source, php]

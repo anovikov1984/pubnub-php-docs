@@ -270,14 +270,14 @@ $pubnub->getConfiguration()->getAuthKey();
 
 [source, php]
 ----
-$pubnub->publish()->channel(string|array)->message(array|string)->setShouldStore(bool)->setMeta(array)->setUsePost(bool)->sync();
+$pubnub->publish()->channel(string|array)->message(array|string)->shouldStore(bool)->meta(array)->usePost(bool)->sync();
 ----
 
 |====
 |Parameter|Type|Required|Default|Description
 |message|object|Yes||The payload
 |channel|string|Yes||Destination of `message`
-|setShouldStore|bool|Optional| `account default` | Store in history
+|shouldStore|bool|Optional| `account default` | Store in history
 |usePost|bool|Optional| `false` | Use POST to `publish`
 |meta|object|Optional| `null` | Meta data object which can be used with the filtering ability
 |use_post|bool|False|Use POST to publish
@@ -290,7 +290,7 @@ $pubnub->publish()->channel(string|array)->message(array|string)->setShouldStore
 $result = $pubnub->publish()
     ->channel("my_channel")
     ->message(["hello", "there"])
-    ->setUsePost(true)
+    ->usePost(true)
     ->sync();
 ----
 
@@ -310,7 +310,7 @@ Publish with metadata
 $result = $pubnub->publish()
     ->channel("my_channel")
     ->message(["hello", "there"])
-    ->setMeta(["name" => "Alex"])
+    ->meta(["name" => "Alex"])
     ->sync();
 ----
 
@@ -324,7 +324,7 @@ try {
     $result = $pubnub->publish()
         ->channel("my_channel")
         ->message(["hello", "there"])
-        ->setMeta(["name" => "Alex", "online" => true])
+        ->meta(["name" => "Alex", "online" => true])
         ->sync();
     print_r($result->getTimetoken());
 } catch (PubNubException $error) {
@@ -428,11 +428,7 @@ after the dot (.)):
 $pubnub->subscribe()->channels("foo.*")->execute();
 ----
 
-5. Wildcard subscribe to channels (Wildcard subscribes allow the client
-to subscribe to multiple channels using wildcard. E.g., if you
-subscribe to a.* you will get all messages for a.b, a.c, a.x.
-The wildcarded * portion refers to any portion of the channel string
-name after the dot (.)):
+5. Subscribing with state:
 
 [source, php]
 ----
