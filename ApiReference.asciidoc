@@ -846,8 +846,10 @@ $pubnub->whereNow()->uuid(string)->sync();
 
 |===
 | Parameter | type | Required | Defaults | Description
+
 | uuid | str | Optional | `uuid` to get info on
 |===
+
 
 ====== Basic Usage
 
@@ -855,6 +857,14 @@ $pubnub->whereNow()->uuid(string)->sync();
 ----
 $result = $pubnub->whereNow()->sync();
 ----
+
+====== Response
+
+The whereNow() operation returns a PNWhereNowResult which contains the following operations:
+|===
+| Parameter|Type
+| getChannels() | array | The list of channels where the UUID is present.
+|===
 
 ====== Other Examples
 [source, php]
