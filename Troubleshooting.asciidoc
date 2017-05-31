@@ -55,6 +55,6 @@ $pubnub->getLogger()->pushHandler(new ErrorLogHandler());
 | PubNubBuildRequestException | Error during building HTTP request to the server. Some passed in values are incorrect or have a wrong type.
 | PubNubConnectionException | Network connection error
 | PubNubResponseParsingException | Response from server is malformed or parsed incorrectly.
-| PubNubServerException | Server respond with error like Bad Request or Access Denied. Check for the error message for details.
-| PubNubValidationException | Passed in params validation error like Missing Channel, Missing Publish key, Missing Secret Key, etc.
+| PubNubServerException | Server responded with error like Bad Request or Access Denied. Check for the error message for details.
+| PubNubValidationException | Error validating params like Missing Channel, Missing Publish key, Missing Secret Key, etc.
 |===
