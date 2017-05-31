@@ -1,0 +1,60 @@
+== PHP V4 SDK Troubleshooting Guide
+
+=== Troubleshooting
+
+[source, php]
+.How to enable logging
+----
+use Monolog\Handler\ErrorLogHandler;
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setPublishKey("pub_key");
+$pnconf->setSubscribeKey("sub_key");
+
+$pubnub = new PubNub($pnconf);
+
+$pubnub->getLogger()->pushHandler(new ErrorLogHandler());
+----
+
+=== Response Status Categories
+
+====== Transactional requests (Publish, History, Where/HereNow, etc.)
+
+|===
+| Category | Description
+| PNTimeoutCategory | Processing has failed because of request time out.
+| PNAccessDeniedCategory | The SDK will announce this error when the PAM (PubNub Access Manager) does not allow the subscription to a channel or a channel group.
+| PNBadRequestCategory | PubNub API server was unable to parse SDK request correctly.
+| PNMalformedResponseCategory | Response cannot be parsed by SDK
+| PNUnknownCategory | No specific category was assigned to the request
+| PNUnexpectedDisconnectCategory | The SDK is not able to reach the PubNub Data Stream Network because the machine or device are not connected to Internet or this has been lost, your ISP (Internet Service Provider) is having to troubles or perhaps or the SDK is behind of a proxy.
+|===
+
+
+====== Subscription status event categories
+
+|===
+| Category | Description
+
+| PNTimeoutCategory | Processing has failed because of request time out.
+| PNAccessDeniedCategory | The SDK will announce this error when the PAM (PubNub Access Manager) does not allow the subscription to a channel or a channel group.
+| PNMalformedResponseCategory | Response cannot be parsed by SDK
+| PNBadRequestCategory | PubNub API server was unable to parse SDK request correctly.
+| PNUnexpectedDisconnectCategory | The SDK is not able to reach the PubNub Data Stream Network because the machine or device are not connected to Internet or this has been lost, your ISP (Internet Service Provider) is having to troubles or perhaps or the SDK is behind of a proxy.
+| PNCancelledCategory | Request was cancelled by user
+|===
+
+=== Exceptions
+
+|===
+| Class | Description
+
+| PubNubBuildRequestException | Error during building HTTP request to the server. Some passed in values are incorrect or have a wrong type.
+| PubNubConnectionException | Network connection error
+| PubNubResponseParsingException | Response from server is malformed or parsed incorrectly.
+| PubNubServerException | Server respond with error like Bad Request or Access Denied. Check for the error message for details.
+| PubNubValidationException | Passed in params validation error like Missing Channel, Missing Publish key, Missing Secret Key, etc.
+|===
