@@ -1057,6 +1057,47 @@ $result = $pubnub->grant()
     ->sync();
 ----
 
+[source, php]
+.6. Application level Grant
+----
+try {
+$result = $pubnub->grant()
+    ->read(true)
+    ->write(true)
+    ->sync();
+
+print_r($result);
+} catch (\PubNub\Exceptions\PubNubServerException $exception) {
+    print_r($exception->getMessage() . "\n");
+    print_r($exception->getStatusCode() . "\n");
+    print_r($exception->getBody());
+} catch (\PubNub\Exceptions\PubNubException $exception) {
+    print_r($exception->getMessage());
+}
+----
+
+[source, php]
+.7. Channel level
+----
+$result = $pubnub->grant()
+    ->channels("my_channel")
+    ->read(true)
+    ->write(true)
+    ->sync();
+----
+
+[source, php]
+.8. User level
+----
+$result = $pubnub->grant()
+    ->channels("my_channel")
+    ->authKeys("my_authkey")
+    ->read(true)
+    ->write(true)
+    ->ttl(5)
+    ->sync();
+----
+
 === Adding Channels to Channel Group
 
 ====== Methods
