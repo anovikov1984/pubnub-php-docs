@@ -84,6 +84,7 @@ $pubnub = new PubNub($pnconf);
 
 |====
 |Parameter | Type | Required | Description
+
 |pnConfiguration | PNConfiguration | Yes | Goto Configuration for more details.
 |====
 
@@ -211,6 +212,7 @@ $pnconf->setUuid(string);
 
 |====
 |Parameter|Type|Required|Default|Description
+
 |`uuid`|string|Yes|`SDK generated uuid`| `UUID` to be used as a device identifier, a default `UUID` is generated if not passed.
 |====
 
@@ -242,6 +244,7 @@ $pnconf->setAuthKey(string);
 ----
 |====
 |Parameter|Type|Required|Description
+
 |`AuthKey`|string|Yes|If Access Manager is utilized, client will use this `authKey` in all restricted requests.
 |====
 
@@ -863,6 +866,7 @@ $result = $pubnub->whereNow()->sync();
 The whereNow() operation returns a PNWhereNowResult which contains the following operations:
 |===
 | Parameter|Type
+
 | getChannels() | array | The list of channels where the UUID is present.
 |===
 
@@ -883,6 +887,7 @@ $pubnub->setState()->channels(string|array)->channelGroups(string|array)->state(
 
 |===
 | Parameter | Type | Required | Description
+
 | channels | str\|array | Optional | `channels` to set `state`
 | channelGroups | str\|array | Optional | `channel groups` to set `state`
 | state | array | Optional | `state` to set
@@ -895,6 +900,7 @@ $pubnub->getState()->channels(string|array)->channelGroups(string|array)->sync()
 
 |===
 | Parameter | Type | Required | Description
+
 | channels | str\|array | Optional | `channels` to get `state`
 | channelGroups | str\|array | Optional | `channel groups` to get `state`
 | uuid | string | Optional | `uuid`
@@ -922,6 +928,7 @@ The `setState()` operation returns a `PNSetStateResult` which contains the follo
 
 |===
 | Method | Type | Description
+
 | setState() | array | array  of UUIDs and the user states.
 |===
 
@@ -929,6 +936,7 @@ The `getState()` operation returns a `PNGetStateResult` which contains the follo
 
 |===
 | Method | Type | Description
+
 | getChannels() | array | array  of `channels` and the user states.
 |===
 
@@ -950,6 +958,7 @@ $pubnub->setState()->channelGroups(["gr1", "gr2", "gr3"])->state(["age" => 30])-
 
 |===
 | Parameter | Type | Required | Defaults | Description
+
 | authKeys | str\|array\|array | Optional | | `auth keys`
 | channels | str\|array\|array | Optional | | `channels` to grant access
 | channelGroups | str\|array\|array | Optional | | `channel groups` to grant access
@@ -979,6 +988,7 @@ $result = $pubnub->grant()
 The `grant()` operation returns a `PNAccessManagerGrantResult` which contains the following fields:
 |===
 | Method | Type | Description
+
 | getLevel() | string | Permissions level, one of `subkey`, `subkey+auth`, `channel`, 'channel-group',
  channel-group+auth' level
 | getTtl() | int | `ttl` of grant
@@ -993,6 +1003,7 @@ The `grant()` operation returns a `PNAccessManagerGrantResult` which contains th
 `PNAccessManagerChannelData` and `PNAccessManagerGroupData` has the same fields structure.
 |===
 | Method | Type | Description
+
 | getAuthKeys() | array | Access rights per auth-key. See `PNAccessManagerKeyData` for more details.
 | getName() | str | Channel or group `name`
 | isReadEnabled() | bool | Channel or group level `read` permissions
@@ -1004,6 +1015,7 @@ The `grant()` operation returns a `PNAccessManagerGrantResult` which contains th
 `PNAccessManagerKeyData`:
 |===
 | Method | Type | Description
+
 | isReadEnabled() | bool | auth-key read permissions
 | isWriteEnabled()| bool | auth-key read permissions
 | isManageEnabled() | bool | auth-key read permissions
@@ -1098,6 +1110,47 @@ $result = $pubnub->grant()
     ->sync();
 ----
 
+[source, php]
+.6. Application level Grant
+----
+try {
+$result = $pubnub->grant()
+    ->read(true)
+    ->write(true)
+    ->sync();
+
+print_r($result);
+} catch (\PubNub\Exceptions\PubNubServerException $exception) {
+    print_r($exception->getMessage() . "\n");
+    print_r($exception->getStatusCode() . "\n");
+    print_r($exception->getBody());
+} catch (\PubNub\Exceptions\PubNubException $exception) {
+    print_r($exception->getMessage());
+}
+----
+
+[source, php]
+.7. Channel level
+----
+$result = $pubnub->grant()
+    ->channels("my_channel")
+    ->read(true)
+    ->write(true)
+    ->sync();
+----
+
+[source, php]
+.8. User level
+----
+$result = $pubnub->grant()
+    ->channels("my_channel")
+    ->authKeys("my_authkey")
+    ->read(true)
+    ->write(true)
+    ->ttl(5)
+    ->sync();
+----
+
 === Adding Channels to Channel Group
 
 ====== Methods
@@ -1112,6 +1165,7 @@ $pubnub->addChannelToChannelGroup()
 
 |===
 | Parameter | Type | Required | Description
+
 | channels | string |array | Yes | `channels` to add to the channel group
 | channelGroup | string  | Yes | The `channel group` to add the channels to
 |===
@@ -1141,6 +1195,7 @@ $pubnub->listChannelsInChannelGroup()
 
 |===
 | Parameter | Type | Required | Description
+
 | channelGroup | string | Yes | The `channel group` to fetch channels
 |===
 
@@ -1168,6 +1223,7 @@ $pubnub->removeChannelFromChannelGroup()
 
 |===
 | Parameter | Type | Required | Description
+
 | channels | string|array | Yes | `channels` remove from the channel group.
 | channelGroup | string | Yes | The `channel group` to remove the channels from.
 |===
@@ -1194,6 +1250,7 @@ $pubnub->removeChannelGroup()
 
 |===
 | Parameter | Type | Required | Description
+
 | channelGroup | string | Yes | The `channel group` to remove
 |===
 
@@ -1225,6 +1282,7 @@ $pubnub->history()
 
 |===
 | Parameter | type | Required | Defaults | Description
+
 | channel | string | True | | Specifies `channel` to return history messages from.
 | reverse | bool| Optional| false | Setting to true will traverse the time line in reverse starting with the oldest message first.
 | includeTimetoken | bool| Optional| false | Whether event dates time tokens should be included in response or not.
@@ -1249,6 +1307,7 @@ $pubnub->history()
 The history() operation returns a PNHistoryResult which contains the following fields:
 |===
 | Method | Type | Description
+
 | getMessages() | array | array of messages of type PNHistoryItemResult. See PNHistoryItemResult for more details.
 | getStartTimetoken() | int |Start timetoken
 | getEndTimetoken() | int |End timetoken
@@ -1257,6 +1316,7 @@ The history() operation returns a PNHistoryResult which contains the following f
 PNHistoryItemResult:
 |===
 | Method | Type | Description
+
 | getTimetoken() | int | `Timetoken` of the message
 | getEntry() | object | Message
 |===
@@ -1332,6 +1392,7 @@ $pubnub->addChannelsToPush()
 ----
 |===
 | Parameter | type | Required | Defaults | Description
+
 | pushType | PNPushType | Yes | Not set | Accepted values: PNPushType.GCM, PNPushType.APNS, PNPushType.MPNS
 | channels | array | Yes | | Add push notifications on the specified channels
 | deviceId | string | Yes | | Device id
@@ -1363,6 +1424,7 @@ $pubnub->listPushProvisions()->pushType(PNPushType)->deviceId(string)->sync();
 
 |===
 | Parameter | type | Required | Defaults | Description
+
 | pushType | PNPushType | Yes | Not set | Accepted values: PNPushType.GCM, PNPushType.APNS, PNPushType.MPNS
 | deviceId | str | Yes | | Device id
 |===
@@ -1380,6 +1442,7 @@ $pubnub->arrayPushProvisions()->pushType(PNPushType::GCM)->deviceId("deviceId")-
 
 |===
 | Parameter | type | Required | Defaults | Description
+
 | Method | Type | Description
 | getChannels | array | array of channels subscribed for push notifications.
 |===
@@ -1397,6 +1460,7 @@ $pubnub->removeChannelsFromPush()->pushType(PNPushType)->channels(string|array)-
 
 |===
 | Parameter | type | Required | Defaults | Description
+
 | getPushType | PNPushType | Yes | Not set | Accepted values: PNPushType.GCM, PNPushType.APNS, PNPushType.MPNS
 | getChannels | array | Yes | | Remove push notifications from the specified channels
 | getDeviceId | str | Yes | | Device id
@@ -1431,6 +1495,7 @@ $pubnub->time()->sync();
 
 |===
 | Method | type | Required | Defaults | Description
+
 | getTimetoken() | int | false | | Returns a `date` representation of current time token.
 |===
 
