@@ -59,7 +59,7 @@ $pnConfiguration->setAuthKey("my_auth_key");
 $pnConfiguration->setSecure(true);
 
 // how long to wait before giving up connection to client
-$pnConfiguration->setConnectTimeout(100);
+$pnConfiguration->setConnectTimeout(10);
 
 // how long to keep the subscribe loop running before disconnect
 $pnConfiguration->setSubscribeTimeout(310);
@@ -710,47 +710,49 @@ The `here_now()` operation returns a `PNHereNowResult` which contains the follow
 $result = $pubnub->hereNow()->channels("my_channel")->includeUuids(true)->includeState(true)->sync();
 ----
 
-[source, json]
+[source, php]
 .Example Response
 ----
-{
-    "status" : 200,
-    "message" : "OK",
-    "service" : "Presence",
-    "uuids" : [
-        {
-            "uuid" : "myUUID0"
-        },
-        {
-            "state" : {
-                "abcd" : {
-                    "age" : 15
-                }
-            },
-            "uuid" : "myUUID1"
-        },
-        {
-            "uuid" : "b9eb408c-bcec-4d34-b4c4-fabec057ad0d"
-        },
-        {
-            "state" : {
-                "abcd" : {
-                    "age" : 15
-                }
-            },
-            "uuid" : "myUUID2"
-        },
-        {
-            "state" : {
-                "abcd" : {
-                    "age" : 24
-                }
-            },
-            "uuid" : "myUUID9"
-        }
-    ],
-    "occupancy" : 5
-}
+PubNub\Models\Consumer\Presence\PNHereNowResult Object
+(
+    [totalChannels:protected] => 2
+    [totalOccupancy:protected] => 3
+    [channels:protected] => Array
+        (
+            [0] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch1
+                    [occupancy:protected] => 1
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+                        )
+                )
+            [1] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch2
+                    [occupancy:protected] => 2
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+
+                            [1] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user3
+                                    [state:protected] =>
+                                )
+                        )
+                )
+        )
+)
 ----
 
 [source, php]
@@ -762,15 +764,46 @@ $result = $pubnub->hereNow()->channels("my_channel")->includeUuids(false)->inclu
 [source, php]
 .Example response
 ----
-{
-    "channels": {
-        "my_channel": {
-            "occupancy": 3
-        }
-    },
-    "total_channels": 1,
-    "total_occupancy": 3
-}
+PubNub\Models\Consumer\Presence\PNHereNowResult Object
+(
+    [totalChannels:protected] => 2
+    [totalOccupancy:protected] => 3
+    [channels:protected] => Array
+        (
+            [0] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch1
+                    [occupancy:protected] => 1
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+                        )
+                )
+            [1] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch2
+                    [occupancy:protected] => 2
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+
+                            [1] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user3
+                                    [state:protected] =>
+                                )
+                        )
+                )
+        )
+)
 ----
 
 [source, php]
@@ -782,25 +815,46 @@ $result = $pubnub->hereNow()->includeUuids(true)->includeState(false)->sync();
 [source, php]
 .Example response
 ----
-{
-    "total_channels" : 2,
-    "total_occupancy" : 3,
-    "channels" : {
-        "lobby" : {
-            "occupancy" : 1,
-            "uuids" : [
-                "dara01"
-            ]
-        },
-        "game01" : {
-            "occupancy" : 2,
-            "uuids" : [
-                "jason01",
-                "jason02"
-            ]
-        }
-    }
-}
+PubNub\Models\Consumer\Presence\PNHereNowResult Object
+(
+    [totalChannels:protected] => 2
+    [totalOccupancy:protected] => 3
+    [channels:protected] => Array
+        (
+            [0] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch1
+                    [occupancy:protected] => 1
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+                        )
+                )
+            [1] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch2
+                    [occupancy:protected] => 2
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+
+                            [1] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user3
+                                    [state:protected] =>
+                                )
+                        )
+                )
+        )
+)
 ----
 
 [source, php]
@@ -809,18 +863,49 @@ $result = $pubnub->hereNow()->includeUuids(true)->includeState(false)->sync();
 $result = $pubnub->hereNow()->includeUuids(true)->includeState(true)->sync();
 ----
 
-[source, json]
+[source, php]
 .Example response
 ----
-{
-    "channels": {
-        "my_channel": {
-            "occupancy": 3
-        }
-    },
-    "total_channels": 1,
-    "total_occupancy": 3
-}
+PubNub\Models\Consumer\Presence\PNHereNowResult Object
+(
+    [totalChannels:protected] => 2
+    [totalOccupancy:protected] => 3
+    [channels:protected] => Array
+        (
+            [0] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch1
+                    [occupancy:protected] => 1
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+                        )
+                )
+            [1] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch2
+                    [occupancy:protected] => 2
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user1
+                                    [state:protected] =>
+                                )
+
+                            [1] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => user3
+                                    [state:protected] =>
+                                )
+                        )
+                )
+        )
+)
 ----
 
 [source, php]
@@ -829,13 +914,45 @@ $result = $pubnub->hereNow()->includeUuids(true)->includeState(true)->sync();
 $pubnub->hereNow()->channelGroups(["cg1", "cg2", "cg3"])->includeUuids(true)->includeState(true)->sync();
 ----
 
-[source, json]
+[source, php]
 .Example response
 ----
-{
-    "occupancy" : 4,
-    "uuids" : ["123123234t234f34fq3dq", "143r34f34t34fq34q34q3", "23f34d3f4rq34r34rq23q", "w34tcw45t45tcw435tww3"]
-}
+PubNub\Models\Consumer\Presence\PNHereNowResult Object
+(
+    [totalChannels:protected] => 1
+    [totalOccupancy:protected] => 4
+    [channels:protected] => Array
+        (
+            [0] => PubNub\Models\Consumer\Presence\PNHereNowChannelData Object
+                (
+                    [channelName:protected] => ch1
+                    [occupancy:protected] => 1
+                    [occupants:protected] => Array
+                        (
+                            [0] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => 123123234t234f34fq3dq
+                                    [state:protected] =>
+                                )
+                            [1] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => 143r34f34t34fq34q34q3
+                                    [state:protected] =>
+                                )
+                            [2] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => 23f34d3f4rq34r34rq23q
+                                    [state:protected] =>
+                                )
+                            [3] => PubNub\Models\Consumer\Presence\PNHereNowOccupantsData Object
+                                (
+                                    [uuid:protected] => w34tcw45t45tcw435tww3
+                                    [state:protected] =>
+                                )
+                        )
+                )
+        )
+)
 ----
 
 === Where Now
@@ -1332,11 +1449,50 @@ $pubnub->history()->channel("my_channel")->count(3)->reverse(true)->sync();
 [source, json]
 .Response
 ----
-[
-    ["Pub1","Pub2","Pub3"],
-    13406746729185766,
-    13406746780720711
-]
+PubNub\Models\Consumer\History\PNHistoryResult Object
+(
+    [messages:PubNub\Models\Consumer\History\PNHistoryResult:private] => Array
+        (
+            [0] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 11
+                            [b] => 22
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 1111
+                )
+
+            [1] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 33
+                            [b] => 44
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 2222
+                )
+            [2] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 55
+                            [b] => 66
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 2222
+                )
+
+        )
+
+    [startTimetoken:PubNub\Models\Consumer\History\PNHistoryResult:private] => 13406746729185766
+    [endTimetoken:PubNub\Models\Consumer\History\PNHistoryResult:private] => 13406746780720711
+)
 ----
 
 [source, php]
@@ -1346,14 +1502,53 @@ $pubnub->history()->channel("my_channel")->start(13847168620721752)->reverse(tru
 ----
 
 
-[source, json]
+[source, php]
 .Response
 ----
-[
-    ["Pub3","Pub4","Pub5"],
-    13406746780720711,
-    13406746845892666
-]
+PubNub\Models\Consumer\History\PNHistoryResult Object
+(
+    [messages:PubNub\Models\Consumer\History\PNHistoryResult:private] => Array
+        (
+            [0] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 11
+                            [b] => 22
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 1111
+                )
+
+            [1] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 33
+                            [b] => 44
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 2222
+                )
+            [2] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 55
+                            [b] => 66
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 2222
+                )
+
+        )
+
+    [startTimetoken:PubNub\Models\Consumer\History\PNHistoryResult:private] => 13406746729185766
+    [endTimetoken:PubNub\Models\Consumer\History\PNHistoryResult:private] => 13406746780720711
+)
 ----
 
 [source, php]
@@ -1362,14 +1557,53 @@ $pubnub->history()->channel("my_channel")->start(13847168620721752)->reverse(tru
 $pubnub->history()->channel("my_channel")->count(100)->start(-1)->end(13847168819178600)->reverse(true)->sync();
 ----
 
-[source, json]
+[source, php]
 .Response
 ----
-[
-    ["Pub3","Pub4","Pub5"],
-    13406746780720711,
-    13406746845892666
-]
+PubNub\Models\Consumer\History\PNHistoryResult Object
+(
+    [messages:PubNub\Models\Consumer\History\PNHistoryResult:private] => Array
+        (
+            [0] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 11
+                            [b] => 22
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 1111
+                )
+
+            [1] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 33
+                            [b] => 44
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 2222
+                )
+            [2] => PubNub\Models\Consumer\History\PNHistoryItemResult Object
+                (
+                    [entry:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => Array
+                        (
+                            [a] => 55
+                            [b] => 66
+                        )
+
+                    [crypto:PubNub\Models\Consumer\History\PNHistoryItemResult:private] =>
+                    [timetoken:PubNub\Models\Consumer\History\PNHistoryItemResult:private] => 2222
+                )
+
+        )
+
+    [startTimetoken:PubNub\Models\Consumer\History\PNHistoryResult:private] => 13406746729185766
+    [endTimetoken:PubNub\Models\Consumer\History\PNHistoryResult:private] => 13406746780720711
+)
 ----
 
 [source, php]
