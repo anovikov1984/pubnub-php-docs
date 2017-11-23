@@ -1612,6 +1612,34 @@ PubNub\Models\Consumer\History\PNHistoryResult Object
 $pubnub->history()->channel("my_channel")->count(100)->includeTimetoken(true)->sync();
 ----
 
+== History Delete
+
+=== Description
+Removes the messages from the history of a specific channel.
+
+=== Method
+To Delete Messages from History you can use the following method(s) in the PHP V4 SDK.
+
+pubnub.deleteMessages().channel(string).start(int).end(int).sync()
+|===
+| Parameter | Type | Required | Defaults | Description
+| channels | list | Yes | | Specifies `channels` to delete messages from.
+| start | int | Optional | | Time token delimiting the `start` of time slice (exclusive) to delete messages from.
+| end | list | Optional | | Time token delimiting the `end` of time slice (inclusive) to delete messages from.
+|===
+
+=== Basic example
+
+[source, php]
+----
+$pubnub->deleteMessages()
+    ->channel("ch")
+    ->start(123)
+    ->end(456)
+    ->sync();
+----
+
+
 === Adding Device to Channel
 
 [source, php]
